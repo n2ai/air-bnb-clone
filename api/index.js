@@ -4,8 +4,10 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const User = require('./models/User')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const bcryptSalt = bcrypt.genSaltSync(10);
+const jwtSecret = 'adasdasdasdasd'
 require('dotenv').config()
 
 app.use(cors({
@@ -29,6 +31,7 @@ app.post('/register', async (req,res)=>{
             email,
             password:bcrypt.hashSync(password, bcryptSalt)
         });
+        
         res.json(userDoc);
     } catch(e){
         res.status(422).json(e)
@@ -43,8 +46,11 @@ app.post('/login', async (req,res)=>{
     if(userDoc){
         const passOK = bcrypt.compareSync(password,userDoc.password);
         if(passOK){
+            jwt.sign({email:userDoc.email, id:userDoc._id},jwtSecret,{},(err,token)=>{
+                if(err) throw err;
+                res.cookie('token',token).json('pass ok')
+            } )
             
-            res.json('pass ok')
         }else{
             res.status(422).json('pass not ok')
         }
