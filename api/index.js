@@ -81,9 +81,14 @@ app.post('/logout', (req,res)=>{
   res.cookie('token','').json(true)
 })
 
-app.post('/upload-by-link', (req,res)=>{
+app.post('/upload-by-link', async (req,res)=>{
   const {link} = req.body;
-
+  const newName = 'Photo' + Date.now() + '.jpg';
+  await imageDownLoader.image({
+    url:link,
+    dest:__dirname + '/uploads' + newName
+  })
+  res.json(newName);
 })
 
 app.listen(4000)
