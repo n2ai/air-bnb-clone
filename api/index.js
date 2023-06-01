@@ -7,16 +7,18 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
 const imageDownLoader = require('image-downloader')
-app.use(cookieParser())
+
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'adasdasdasdasd'
 require('dotenv').config()
 
+app.use(cookieParser())
 app.use(cors({
     credentials:true,
     origin: 'http://127.0.0.1:5173',
 }))
 app.use(express.json())
+app.use('uploads', express.static(__dirname + '/uploads'))
 
 mongoose.connect(process.env.MONGO_URL)
 
