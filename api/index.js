@@ -10,18 +10,24 @@ const imageDownLoader = require('image-downloader')
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'adasdasdasdasd'
-require('dotenv').config()
+require('dotenv').config();
 
 app.use(cookieParser())
 app.use(cors({
-    credentials:true,
-    origin: 'http://127.0.0.1:5173',
-}))
+  credentials: true,
+  origin: 'http://127.0.0.1:5173',
+}));
 app.use(express.json())
 app.use('uploads', express.static(__dirname + '/uploads'))
 
-mongoose.connect(process.env.MONGO_URL)
+try{
+  mongoose.connect(process.env.MONGO_URL);
+  console.log('connected')
 
+}catch(e){
+  console.log(e)
+  console.log('mongoDB connected')
+}
 app.get('/test', (req,res)=>{
     res.json('test ok')
 });
@@ -44,8 +50,8 @@ app.post('/register', async (req,res)=>{
 
 })
 
-app.post('/login', async (req,res)=>{
-  mongoose.connect(process.env.MONGO_URL);
+app.post('/login', async (req,res) => {
+  
   const {email,password} = req.body;
   const userDoc = await User.findOne({email});
   if (userDoc) {
@@ -53,7 +59,7 @@ app.post('/login', async (req,res)=>{
     if (passOk) {
       jwt.sign({
         email:userDoc.email,
-        id:userDoc._id,
+        id:userDoc._id
       }, jwtSecret, {}, (err,token) => {
         if (err) throw err;
         res.cookie('token', token).json(userDoc);
@@ -64,7 +70,7 @@ app.post('/login', async (req,res)=>{
   } else {
     res.json('not found');
   }
-})
+});
 
 app.get('/profile', (req,res)=>{
   const {token} = req.cookies;
