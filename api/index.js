@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
 const imageDownLoader = require('image-downloader')
+const multer = require('multer')
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'adasdasdasdasd'
@@ -99,4 +100,10 @@ app.post('/upload-by-link', async (req,res)=>{
   res.json(newName);
 })
 
-app.listen(4000)
+const photosMiddleWare = multer({dest:'uploads'});
+app.post('/upload', photosMiddleWare.array('photos', 100), (req,res)=>{
+  console(req.files)
+  res.json(req.files);
+})
+
+app.listen(4000);
