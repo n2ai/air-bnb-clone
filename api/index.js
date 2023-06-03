@@ -18,7 +18,7 @@ app.use(cors({
   origin: 'http://127.0.0.1:5173',
 }));
 app.use(express.json())
-app.use('uploads', express.static(__dirname + '/uploads'))
+app.use('/uploads', express.static(__dirname+'/uploads'))
 
 try{
   mongoose.connect(process.env.MONGO_URL);
@@ -91,10 +91,10 @@ app.post('/logout', (req,res)=>{
 
 app.post('/upload-by-link', async (req,res)=>{
   const {link} = req.body;
-  const newName = 'Photo' + Date.now() + '.jpg';
+  const newName = 'photo' + Date.now() + '.jpg';
   await imageDownLoader.image({
     url:link,
-    dest:__dirname + '/uploads' + newName
+    dest:__dirname + '/uploads/' + newName
   })
   res.json(newName);
 })
